@@ -1,27 +1,18 @@
-import RPi.GPIO as GPIO
-import time
+from gpiozero import MotionSensor, LED
+from time import sleep
 
-pir_sensor = 11
-LED = 7
+pir = MotionSensor(4)
+led = LED(26)
 
-GPIO.setmode(GPIO.BOARD)
+led.off()
+print("waiting for PIR sattle")
+pir.wait_for_no_motion()
+sleep(5)
 
-GPIO.setup(LED,GPIO.OUT)
-
-GPIO.setup(pir_sensor, GPIO.IN)
-
-current_state = 0
-try:
-    while True:
-        time.sleep(0.1)
-        current_state = GPIO.input(pir_sensor)
-        if current_state == 1:
-            print("GPIO pin %s is %s" % (pir_sensor, current_state))
-            GPIO.output(LED,True)
-            time.sleep(1)
-            GPIO.output(LED,False)
-            time.sleep(5)
-except KeyboardInterrupt:
-    pass
-finally:
-    GPIO.cleanup()
+while True:
+    print("Ready")
+    pir.wait_for_motion()
+    print("motiondetected")
+    led.on()
+    sleep(3)
+    led.off()
