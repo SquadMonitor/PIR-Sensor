@@ -49,17 +49,19 @@ def open_camera():
 
 def capture_image():
     global frame
-    
-    nama_file = datetime.now().strftime("%Y:%m:%d_%h:%m:%S")
-    image = cv2.imwrite(path + "/" + nama_file + ".jpg", frame)    #fungsi untuk menyimpan gambar
-    print("sukses simpan gambar denga nama file ", nama_file)
-    send_image_to_telegram(nama_file)
+    try:
+        nama_file = datetime.now().strftime("%Y:%m:%d_%h:%m:%S")
+        image = cv2.imwrite(path + "/" + nama_file + ".jpg", frame)    #fungsi untuk menyimpan gambar
+        print("sukses simpan gambar denga nama file ", nama_file)
+        send_image_to_telegram(nama_file)
+    except Exception as e:
+        print(f'[FAILED] capture_image= {e}' )
 
 def send_image_to_telegram(file_img):	
 	try:
 		TOKEN = "6212224224:AAERWa8WaWAHkugHi_--WmPmg1g3eclDz50"  #token bot kelompok
 		chat_id = "1125110429"   #ganti chat id pengguna
-		image=open(path+file_img,'rb')
+		image=open(path+'/'+file_img,'rb')
 		url = f"https://api.telegram.org/bot{TOKEN}/sendPhoto?chat_id={chat_id}"
 		resp=requests.get(url,files={'photo':image}) 
 
@@ -75,7 +77,7 @@ if __name__ == '__main__':
     while True:
         if GPIO.input(pir_sensor): #ketika pir aktif   
             print("[INFO] PIR  terdeteksi")
-        
+            capture_image()
         else:
             print("[INFO] PIR tidak terdeteksi")
             
