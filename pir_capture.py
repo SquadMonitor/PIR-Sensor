@@ -50,8 +50,9 @@ def open_camera():
 def capture_image():
     global frame
     try:
-        nama_file = datetime.now().strftime("%Y:%m:%d_%h:%m:%S")
-        image = cv2.imwrite(path + "/" + nama_file + ".jpg", frame)    #fungsi untuk menyimpan gambar
+        dt_string = datetime.now().strftime("%Y:%m:%d_%h:%m:%S")
+        nama_file = dt_string + ".jpg"
+        image = cv2.imwrite(path + "/" + nama_file, frame)    #fungsi untuk menyimpan gambar
         print("sukses simpan gambar denga nama file ", nama_file)
         send_image_to_telegram(nama_file)
     except Exception as e:
@@ -72,6 +73,13 @@ def send_image_to_telegram(file_img):
 		print(f'[FAILED] send image to telegram with error = {e}' )
 
 if __name__ == '__main__':
+    if not os.path.exists(path):
+        print("[INFO] Membuat folder capture")
+        os.mkdir(path)
+    else:
+        print("[INFO] folder capture sudah terbentuk")
+
+    
     start_open_camera() #running dengan menggunakan threading
     
     while True:
