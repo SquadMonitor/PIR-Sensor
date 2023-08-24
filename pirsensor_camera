@@ -11,7 +11,7 @@ cam = cv2.VideoCapture(0)  #default 0 untuk webcam laptop
                             #selain 0 (1), (2) untuk webcam
 
 pir_sensor = 11
-buzzer = 26
+buzzer = 5
 
 path = os.getcwd() + "/capture"
 GPIO.setmode(GPIO.BOARD)
@@ -87,9 +87,9 @@ if __name__ == '__main__':
         if GPIO.input(pir_sensor): #ketika pir aktif   
             print("[INFO] PIR  terdeteksi")
             GPIO.output(buzzer, GPIO.HIGH)
-            
+            time.sleep(2)
             capture_image()
         else:
             print("[INFO] PIR tidak terdeteksi")
-            
+            GPIO.output(buzzer, GPIO.LOW)
         time.sleep(2)
